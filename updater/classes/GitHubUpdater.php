@@ -423,7 +423,7 @@ class GitHubUpdater
 	 */
 	public function upgrader_post_install( $response, $extras, $result ) {
 		global $wp_filesystem;
-		if($this->config['proper_folder_name'] !== $result['destination_name']){
+		if('wp-auto-updater-mcs-main' !== $result['destination_name']){
 			return $response;
 		}
 		// Move & Activate
