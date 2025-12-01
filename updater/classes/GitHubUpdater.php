@@ -386,7 +386,10 @@ class GitHubUpdater
 	 */
 	public function get_plugin_info( $false, $action, $response ) {
 		// Check if this call API is for the right plugin
-		if ( !isset( $response->slug ) || $response->slug != $this->config['slug'] ) {
+		if ( !isset( $response->slug ) ) {
+			return $false;
+		}
+		if ( $response->slug != $this->config['slug']) {
 			return $false;
 		}
 		$update = version_compare( $this->config['new_version'], $this->config['version'] );
@@ -418,10 +421,11 @@ class GitHubUpdater
 	 * @param array   $result     the result of the move
 	 * @return array $result the result of the move
 	 */
-	public function upgrader_post_install( $true, $hook_extra, $result ) {
-
+	public function upgrader_post_install( $response, $extras, $result ) {
 		global $wp_filesystem;
-
+		if($this->config['proper_folder_name'] !== $result['destination_name']){
+			return $response;
+		}
 		// Move & Activate
 		$proper_destination = WP_PLUGIN_DIR.'/'.$this->config['proper_folder_name'];
 		$wp_filesystem->move( $result['destination'], $proper_destination );
